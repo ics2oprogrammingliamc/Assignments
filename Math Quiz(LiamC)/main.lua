@@ -76,7 +76,7 @@ end
 
 local function AskQuestion()
 	-- generate a random number between 1-2
-	randomOperator = math.random(1, 4)
+	randomOperator = math.random(1, 5)
 	
 	-- if the random operator is 1, then do addition
 	if (randomOperator == 1) then
@@ -131,9 +131,18 @@ local function AskQuestion()
 			-- create question in text object
 			questionObject.text = randomNumber1 .. " / " .. randomNumber2 .. " = "
 
+				elseif (randomOperator == 5) then
+				-- generate 2 random numbers between 0-10 then add them
+				randomNumber1 = math.random(1, 4)
+				randomNumber2 = math.random(1, 3)
+				-- calculate the answer
+				correctAnswer = randomNumber1 ^ randomNumber2
+				print(correctAnswer)
+				-- create question in text object
+				questionObject.text = randomNumber1 .. " ^ " .. randomNumber2 .. " = "	
+
 	end
 end
-
 
 local function HideCorrect()
 	correctObject.isVisible = false
@@ -156,7 +165,7 @@ local function NumericFieldListener( event )
 	elseif event.phase == "submitted" then
 
 		-- when the answer is submitted (enter key is pressed) set the user input to user's answer
-		userAnswer = (event.target.text)
+		userAnswer = tonumber(event.target.text)
 
 		-- if the users answer and the correct answer are the same:
 		if (userAnswer == correctAnswer) then
