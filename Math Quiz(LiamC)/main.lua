@@ -13,7 +13,7 @@ display.setStatusBar(display.HiddenStatusBar)
 local totalSeconds = 10
 local secondsLeft = 10
 local clockText
-local countDownTimer
+local countDownTimer2
 
 local lives = 3
 local heart1
@@ -54,22 +54,6 @@ local function UpdateTime()
 		-- reset the number of seconds left
 		secondsLeft = totalSeconds
 		lives = lives - 1
-
-		-- if no lives play sound and show losing image then cancel timer by making it invisible
-		if (lives == 2) then
-			heart3.isVisible = false
-		elseif (lives == 1) then
-			heart2.isVisible = false
-			heart3.isVisible  =false
-		elseif (lives == 0) then
-			heart1.isVisible = false
-			heart2.isVisible = false
-			heart3.isVisible = false
-		elseif (lives < 0) then
-			heart1.isVisible = false
-			heart2.isVisible = false
-			heart3.isVisible = false
-		end
 	end
 
 end
@@ -119,8 +103,8 @@ local function AskQuestion()
 			
 			elseif (randomOperator == 4) then
 			-- generate 2 random numbers between 0-10 then add them
-			randomNumber1 = math.random(0, 100)
-			randomNumber2 = math.random(0, 100)
+			randomNumber1 = math.random(0, 10)
+			randomNumber2 = math.random(0, 10)
 			-- calculate the answer
 
 			correctAnswer = randomNumber1 / randomNumber2
@@ -144,6 +128,23 @@ local function AskQuestion()
 	end
 end
 
+local function DeleteHearts()
+		-- if no lives play sound and show losing image then cancel timer by making it invisible
+	if (lives == 2) then
+		heart3.isVisible = false
+	elseif (lives == 1) then
+		heart2.isVisible = false
+		heart3.isVisible  =false
+	elseif (lives <= 0) then
+		heart1.isVisible = false
+		heart2.isVisible = false
+		heart3.isVisible = false
+		explosions.isVisible = true
+
+
+	end 
+end
+
 local function HideCorrect()
 	correctObject.isVisible = false
 	AskQuestion()
@@ -165,6 +166,8 @@ local function NumericFieldListener( event )
 	elseif event.phase == "submitted" then
 
 		-- when the answer is submitted (enter key is pressed) set the user input to user's answer
+		userAnswer = tonumber(event.target.text)
+
 		userAnswer = tonumber(event.target.text)
 
 		-- if the users answer and the correct answer are the same:
@@ -193,11 +196,15 @@ local function NumericFieldListener( event )
 end
 	
 
-
+------------------------------------------------------------------------------------------------------
+--	TIMER
+-----------------------------------------------------------------------------------------------------
 -- function that calls timer
 local function StartTimer()
 	-- create countdown timer that loops infinetely
 	countDownTimer = timer.performWithDelay( 1000, UpdateTime, 0)
+	countDownTimer2 = timer.performWithDelay( 100, DeleteHearts, 0)
+
 end
 
 ----------------------------------------------------------------------------------
@@ -236,6 +243,11 @@ heart2.y = display.contentHeight * 1 / 7
 heart1 = display.newImageRect("Images/heart.png", 100, 100)
 heart1.x = display.contentWidth * 7 / 8
 heart1.y = display.contentHeight * 1 / 7
+
+explosions = display.newImageRect("Images/explosion.png", 500, 500)
+explosions.x = display.contentWidth/2
+explosions.y = display.contentHeight/2
+explosions.isVisible = false
 
 clockText = display.newText( "" .. secondsLeft .. "", display.contentHeight*1/7, display.contentWidth*1/9, nil, 50 )
 
