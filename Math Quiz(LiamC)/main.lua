@@ -4,7 +4,7 @@
 -- This program is a fun Math Quiz that test your knoledge with a limitted time
 
 display.setStatusBar(display.HiddenStatusBar)
-
+display.setDefault ("background", 0, 1, 0)
 ------------------------------------------------------------------------------------
 -- VARIBALES
 --------------------------------------------------------------------------------------------
@@ -14,6 +14,7 @@ local totalSeconds = 10
 local secondsLeft = 10
 local clockText
 local countDownTimer2
+local countdownTimer3
 
 local lives = 3
 local heart1
@@ -37,6 +38,15 @@ local incorrectObject
 local randomOperator
 local rounder
 local temp
+local explosions
+local gameOver
+
+-- timer vars
+local correctTimer
+local incorrectTimer
+local explosionTimer
+local winTimer
+local gameOverTimer
 
 -----------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
@@ -114,12 +124,11 @@ local function AskQuestion()
 
 			-- create question in text object
 			questionObject.text = randomNumber1 .. " / " .. randomNumber2 .. " = "
-
 	end
 end
 
 local function DeleteHearts()
-		-- if no lives play sound and show losing image then cancel timer by making it invisible
+	-- if no lives play sound and show losing image then cancel timer by making it invisible
 	if (lives == 2) then
 		heart3.isVisible = false
 	elseif (lives == 1) then
@@ -129,10 +138,30 @@ local function DeleteHearts()
 		heart1.isVisible = false
 		heart2.isVisible = false
 		heart3.isVisible = false
+		numericField.isVisible = false
+		questionObject.isVisible = false
+		clockText.isVisible = false
+		scoreObject.isVisible = false
 		explosions.isVisible = true
+		incorrectObject.isVisible = false
+		gameOverTimer = timer.performWithDelay(2000, GameOver)	
+	end
+end
 
-
-	end 
+local function Win()
+	if (score >= 3) then
+		win.isVisible = true
+		heart1.isVisible = false
+		heart2.isVisible = false
+		heart3.isVisible = false
+		numericField.isVisible = false
+		questionObject.isVisible = false
+		clockText.isVisible = false
+		scoreObject.isVisible = false
+		explosions.isVisible = false
+		incorrectObject.isVisible = false
+		correctObject.isVisible = false
+	end
 end
 
 local function HideCorrect()
@@ -171,20 +200,24 @@ local function NumericFieldListener( event )
 			-- set visibles and invisibles
 			correctObject.isVisible = true
 			incorrectObject.isVisible = false
-			timer.performWithDelay(2000, HideCorrect)
+			correctTimer = timer.performWithDelay(2000, HideCorrect)
 
 		elseif event.phase == "submitted" then
 			if (userAnswer +- correctAnswer) then
 				lives = lives - 1
 				correctObject.isVisible = false
 				incorrectObject.isVisible = true
-				timer.performWithDelay(2000, Hideincorrect)
+				incorrectTimer = timer.performWithDelay(2000, Hideincorrect)
 
 			end
 		end
 	end
 end
 	
+local function Explosion()
+	explosions.isVisible = false
+end
+
 
 ------------------------------------------------------------------------------------------------------
 --	TIMER
@@ -194,7 +227,7 @@ local function StartTimer()
 	-- create countdown timer that loops infinetely
 	countDownTimer = timer.performWithDelay( 1000, UpdateTime, 0)
 	countDownTimer2 = timer.performWithDelay( 100, DeleteHearts, 0)
-
+	countdownTimer3 = timer.performWithDelay( 100, Win, 0)
 end
 
 ----------------------------------------------------------------------------------
@@ -222,6 +255,7 @@ numericField.inputType = "number"
 -- add the event listener fr the numeric field
 numericField:addEventListener( "userInput", NumericFieldListener)
 
+-- display hearts
 heart3 = display.newImageRect("Images/heart.png", 100, 100)
 heart3.x = display.contentWidth * 5 / 8
 heart3.y = display.contentHeight * 1 / 7
@@ -234,13 +268,28 @@ heart1 = display.newImageRect("Images/heart.png", 100, 100)
 heart1.x = display.contentWidth * 7 / 8
 heart1.y = display.contentHeight * 1 / 7
 
+-- craete object explosion
 explosions = display.newImageRect("Images/explosion.png", 500, 500)
 explosions.x = display.contentWidth/2
 explosions.y = display.contentHeight/2
 explosions.isVisible = false
 
+-- create object gameOver
+gameOver = display.newImageRect("Images/gameOver.png", 500, 500)
+gameOver.x = display.contentWidth/2
+gameOver.y = display.contentHeight/2
+gameOver.isVisible = false
+
+--create win object
+win = display.newImageRect("Images/win.png", 500, 200)
+win.x = display.contentWidth/2
+win.y = display.contentHeight/2
+win.isVisible = false
+
+-- create clock text
 clockText = display.newText( "" .. secondsLeft .. "", display.contentHeight*1/7, display.contentWidth*1/9, nil, 50 )
 
+-- show score
 scoreObject = display.newText("" .. score .. "", display.contentHeight*3/7, display.contentWidth*1/9, nil, 50 )
 ------------------------- ------------------------------------------------------------------
 -- FUNCTIONS
