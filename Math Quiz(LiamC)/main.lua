@@ -14,6 +14,7 @@ local totalSeconds = 10
 local secondsLeft = 10
 local clockText
 local countDownTimer2
+local gameTimer
 
 local lives = 3
 local heart1
@@ -48,7 +49,7 @@ local function UpdateTime()
 	secondsLeft = secondsLeft - 1
 	
 	-- display the number of seconds left in the clock object
-	clockText.text = secondsLeft .. ""
+	clockText.text = "seconds left = " .. secondsLeft
 
 	if (secondsLeft == 0 ) then
 		-- reset the number of seconds left
@@ -117,8 +118,8 @@ local function AskQuestion()
 
 				elseif (randomOperator == 5) then
 				-- generate 2 random numbers between 0-10 then add them
-				randomNumber1 = math.random(1, 4)
-				randomNumber2 = math.random(1, 3)
+				randomNumber1 = math.random(1, 10)
+				randomNumber2 = math.random(1, 2)
 				-- calculate the answer
 				correctAnswer = randomNumber1 ^ randomNumber2
 				print(correctAnswer)
@@ -126,6 +127,12 @@ local function AskQuestion()
 				questionObject.text = randomNumber1 .. " ^ " .. randomNumber2 .. " = "	
 
 	end
+end
+
+local function GameOver()
+	explosions.isVisible = false
+	gameOver.isVisible = true
+	print("hi")
 end
 
 local function DeleteHearts()
@@ -140,10 +147,16 @@ local function DeleteHearts()
 		heart2.isVisible = false
 		heart3.isVisible = false
 		explosions.isVisible = true
-
-
+		scoreObject.isVisible = false
+		incorrectObject.isVisible = false
+		correctObject.isVisible = false
+		clockText.isVisible = false
+		numericField.isVisible = false
+		questionObject.isVisible = false
+		timer.performWithDelay( 2000, GameOver )
 	end 
 end
+
 
 local function HideCorrect()
 	correctObject.isVisible = false
@@ -176,7 +189,7 @@ local function NumericFieldListener( event )
 			secondsLeft = totalSeconds
 			-- give points for correct answer
 			score = score + 1
-			scoreObject.text = score .. ""
+			scoreObject.text = "score = " .. score .. ""
 
 			-- set visibles and invisibles
 			correctObject.isVisible = true
@@ -249,9 +262,17 @@ explosions.x = display.contentWidth/2
 explosions.y = display.contentHeight/2
 explosions.isVisible = false
 
-clockText = display.newText( "" .. secondsLeft .. "", display.contentHeight*1/7, display.contentWidth*1/9, nil, 50 )
+clockText = display.newText( "seconds left = " .. secondsLeft .. "", 200, 70, nil, 50 )
+clockText:setTextColor(1, 0, 0)
+scoreObject = display.newText("score = " .. score .. "", 200, 120, nil, 50 )
+scoreObject:setTextColor(0, 1, 0)
 
-scoreObject = display.newText("" .. score .. "", display.contentHeight*3/7, display.contentWidth*1/9, nil, 50 )
+
+gameOver = display.newImageRect("Images/GameOver.png", 512, 350)
+gameOver.x = display.contentWidth/2
+gameOver.y = display.contentHeight/2
+gameOver.isVisible = false
+
 ------------------------- ------------------------------------------------------------------
 -- FUNCTIONS
 ----------------------------------------------------------------------------------------------------------------
