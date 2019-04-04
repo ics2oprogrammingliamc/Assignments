@@ -48,6 +48,15 @@ local explosionTimer
 local winTimer
 local gameOverTimer
 
+local winSound = audio.loadSound( "Sounds/musical001.mp3" )
+local winSound
+local correctSound = audio.loadSound( "Sounds/correctSound.mp3" )
+local correctSound
+local incorrectSound
+local incorrectSound = audio.loadSound( "Sounds/wrongSound (2).mp3" )
+local loseSound = audio.loadSound( "Sounds/aircraft008.mp3" )
+local loseSound
+
 -----------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
 ----------------------------------------------------------------------------
@@ -159,7 +168,7 @@ local function DeleteHearts()
 end
 
 local function Win()
-	if (score >= 3) then
+	if (score >= 1) then
 		win.isVisible = true
 		heart1.isVisible = false
 		heart2.isVisible = false
@@ -171,6 +180,7 @@ local function Win()
 		explosions.isVisible = false
 		incorrectObject.isVisible = false
 		correctObject.isVisible = false
+		winSound = audio.play(winSound)
 	end
 end
 
