@@ -13,7 +13,8 @@ display.setDefault ("background", 0, 1, 0)
 local totalSeconds = 10
 local secondsLeft = 10
 local clockText
-local countDownTimer2
+local countDownTimer
+local gameTimer
 local countdownTimer3
 
 local lives = 3
@@ -57,6 +58,15 @@ local incorrectSound = audio.loadSound( "Sounds/wrongSound (2).mp3" )
 local loseSound = audio.loadSound( "Sounds/aircraft008.mp3" )
 local loseSound
 
+-- clocks
+local correctSound = audio.loadSound( "Sounds/correctSound.mp3" )
+local correctSoundClock
+local incorrectSound = audio.loadSound( "Sounds/wrongSound.mp3" )
+local incorrectSoundClock
+local winSound = audio.loadSound( "Sounds/gong.mp3" )
+local winSoundClock 
+local loseSound = audio.loadSound( "Sounds/aircraft015.mp3" )
+local loseSoundClock
 -----------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
 ----------------------------------------------------------------------------
@@ -67,7 +77,7 @@ local function UpdateTime()
 	secondsLeft = secondsLeft - 1
 	
 	-- display the number of seconds left in the clock object
-	clockText.text = secondsLeft .. ""
+	clockText.text = "seconds left = " .. secondsLeft
 
 	if (secondsLeft == 0 ) then
 		-- reset the number of seconds left
@@ -136,14 +146,20 @@ local function AskQuestion()
 
 				elseif (randomOperator == 5) then
 				-- generate 2 random numbers between 0-10 then add them
-				randomNumber1 = math.random(1, 4)
-				randomNumber2 = math.random(1, 3)
+				randomNumber1 = math.random(1, 10)
+				randomNumber2 = math.random(1, 2)
 				-- calculate the answer
 				correctAnswer = randomNumber1 ^ randomNumber2
 				print(correctAnswer)
 				-- create question in text object
 				questionObject.text = randomNumber1 .. " ^ " .. randomNumber2 .. " = "	
 	end
+end
+
+local function GameOver()
+	explosions.isVisible = false
+	gameOver.isVisible = true
+	print("hi")
 end
 
 local function DeleteHearts()
@@ -162,6 +178,14 @@ local function DeleteHearts()
 		clockText.isVisible = false
 		scoreObject.isVisible = false
 		explosions.isVisible = true
+		scoreObject.isVisible = false
+		incorrectObject.isVisible = false
+		correctObject.isVisible = false
+		clockText.isVisible = false
+		numericField.isVisible = false
+		questionObject.isVisible = false
+		incorrectSoundClock = audio.play(incorrectSound)
+		timer.performWithDelay( 2000, GameOver )
 		incorrectObject.isVisible = false
 		gameOverTimer = timer.performWithDelay(2000, GameOver)	
 	end
@@ -181,7 +205,12 @@ local function Win()
 		incorrectObject.isVisible = false
 		correctObject.isVisible = false
 		winSound = audio.play(winSound)
+		timer.performWithDelay(2000, EndSound)
 	end
+end
+
+local function EndSound()
+	winSoundClock = audio.play(winSound)
 end
 
 local function HideCorrect()
@@ -206,16 +235,15 @@ local function NumericFieldListener( event )
 
 		-- when the answer is submitted (enter key is pressed) set the user input to user's answer
 		userAnswer = tonumber(event.target.text)
-
-		userAnswer = tonumber(event.target.text)
-
+		event.target.text = ""
 		-- if the users answer and the correct answer are the same:
 		if (userAnswer == correctAnswer) then
 			-- reset total seconds left
 			secondsLeft = totalSeconds
 			-- give points for correct answer
 			score = score + 1
-			scoreObject.text = score .. ""
+			scoreObject.text = "score = " .. score .. ""
+			correctSoundClock = audio.play(correctSound)
 
 			-- set visibles and invisibles
 			correctObject.isVisible = true
@@ -227,6 +255,7 @@ local function NumericFieldListener( event )
 				lives = lives - 1
 				correctObject.isVisible = false
 				incorrectObject.isVisible = true
+				incorrectSoundClock = audio.play(incorrectSound)
 				incorrectTimer = timer.performWithDelay(2000, Hideincorrect)
 
 			end
@@ -294,6 +323,17 @@ explosions.x = display.contentWidth/2
 explosions.y = display.contentHeight/2
 explosions.isVisible = false
 
+clockText = display.newText( "seconds left = " .. secondsLeft .. "", 200, 70, nil, 50 )
+clockText:setTextColor(1, 0, 0)
+scoreObject = display.newText("score = " .. score .. "", 200, 120, nil, 50 )
+scoreObject:setTextColor(0, 1, 0)
+
+
+gameOver = display.newImageRect("Images/GameOver.png", 512, 350)
+gameOver.x = display.contentWidth/2
+gameOver.y = display.contentHeight/2
+gameOver.isVisible = false
+
 -- create object gameOver
 gameOver = display.newImageRect("Images/gameOver.png", 500, 500)
 gameOver.x = display.contentWidth/2
@@ -307,10 +347,9 @@ win.y = display.contentHeight/2
 win.isVisible = false
 
 -- create clock text
-clockText = display.newText( "" .. secondsLeft .. "", display.contentHeight*1/7, display.contentWidth*1/9, nil, 50 )
 
 -- show score
-scoreObject = display.newText("" .. score .. "", display.contentHeight*3/7, display.contentWidth*1/9, nil, 50 )
+scoreObject = display.newText("score = " .. score .. "", display.contentHeight*2/7, display.contentWidth*1/9, nil, 50 )
 ------------------------- ------------------------------------------------------------------
 -- FUNCTIONS
 ----------------------------------------------------------------------------------------------------------------
