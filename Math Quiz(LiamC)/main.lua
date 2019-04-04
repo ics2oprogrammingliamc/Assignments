@@ -49,6 +49,15 @@ local explosionTimer
 local winTimer
 local gameOverTimer
 
+-- clocks
+local correctSound = audio.loadSound( "Sounds/correctSound.mp3" )
+local correctSoundClock
+local incorrectSound = audio.loadSound( "Sounds/wrongSound.mp3" )
+local incorrectSoundClock
+local winSound = audio.loadSound( "Sounds/gong.mp3" )
+local winSoundClock 
+local loseSound = audio.loadSound( "Sounds/aircraft015.mp3" )
+local loseSoundClock
 -----------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
 ----------------------------------------------------------------------------
@@ -166,6 +175,7 @@ local function DeleteHearts()
 		clockText.isVisible = false
 		numericField.isVisible = false
 		questionObject.isVisible = false
+		incorrectSoundClock = audio.play(incorrectSound)
 		timer.performWithDelay( 2000, GameOver )
 		incorrectObject.isVisible = false
 		gameOverTimer = timer.performWithDelay(2000, GameOver)	
@@ -185,9 +195,13 @@ local function Win()
 		explosions.isVisible = false
 		incorrectObject.isVisible = false
 		correctObject.isVisible = false
+		timer.performWithDelay(2000, EndSound)
 	end
 end
 
+local function EndSound()
+	winSoundClock = audio.play(winSound)
+end
 
 local function HideCorrect()
 	correctObject.isVisible = false
@@ -211,9 +225,7 @@ local function NumericFieldListener( event )
 
 		-- when the answer is submitted (enter key is pressed) set the user input to user's answer
 		userAnswer = tonumber(event.target.text)
-
-		userAnswer = tonumber(event.target.text)
-
+		event.target.text = ""
 		-- if the users answer and the correct answer are the same:
 		if (userAnswer == correctAnswer) then
 			-- reset total seconds left
@@ -221,6 +233,7 @@ local function NumericFieldListener( event )
 			-- give points for correct answer
 			score = score + 1
 			scoreObject.text = "score = " .. score .. ""
+			correctSoundClock = audio.play(correctSound)
 
 			-- set visibles and invisibles
 			correctObject.isVisible = true
@@ -232,6 +245,7 @@ local function NumericFieldListener( event )
 				lives = lives - 1
 				correctObject.isVisible = false
 				incorrectObject.isVisible = true
+				incorrectSoundClock = audio.play(incorrectSound)
 				incorrectTimer = timer.performWithDelay(2000, Hideincorrect)
 
 			end
@@ -323,10 +337,9 @@ win.y = display.contentHeight/2
 win.isVisible = false
 
 -- create clock text
-clockText = display.newText( "" .. secondsLeft .. "", display.contentHeight*1/7, display.contentWidth*1/9, nil, 50 )
 
 -- show score
-scoreObject = display.newText("" .. score .. "", display.contentHeight*3/7, display.contentWidth*1/9, nil, 50 )
+scoreObject = display.newText("score = " .. score .. "", display.contentHeight*2/7, display.contentWidth*1/9, nil, 50 )
 ------------------------- ------------------------------------------------------------------
 -- FUNCTIONS
 ----------------------------------------------------------------------------------------------------------------
