@@ -10,7 +10,7 @@ display.setDefault ("background", 0, 1, 0)
 --------------------------------------------------------------------------------------------
 
 -- vars for tuimers
-local totalSeconds = 10
+local totalSeconds = 11
 local secondsLeft = 10
 local clockText
 local countDownTimer
@@ -192,7 +192,7 @@ local function DeleteHearts()
 end
 
 local function Win()
-	if (score >= 1) then
+	if (score >= 10) then
 		win.isVisible = true
 		heart1.isVisible = false
 		heart2.isVisible = false
