@@ -5,3 +5,6 @@
 -----------------------------------------------------------------------------------------
 
 -- Your code here
+
+display.setStatusBar(display.HiddenStatusBar)
+local 
