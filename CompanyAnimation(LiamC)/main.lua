@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------------------------
---
--- main.lua
---
+-- Title: Assignemt 6 Company Animation
+-- Name : Liam Csiffary
+--Course: ICS2O/3C
+-- This Program is an animation for the companys logo.
 -----------------------------------------------------------------------------------------
 
 -- Your code here
