@@ -10,27 +10,36 @@
 display.setStatusBar(display.HiddenStatusBar)
 display.setDefault("background", 0, 1, 1)
 ----------------------------------------------------------------
---                              Variables + Objectsd
+--                              LOCALS Variables
 -------------------------------------------------------------------
 -- create company logo
-local companyLogo = display.newImageRect("Images/CompanyLogoLiamC.@2x-Recovered.png", 100, 100)
-companyLogo.x = 0
-companyLogo.y = display.contentHeight/2
+local companyLogo 
 
-local companyLogo2 = display.newImageRect("Images/CompanyLogoLiamC.@2x-Recovered.png", 100, 100)
-companyLogo2.isVisible = false
-companyLogo2.x = display.contentWidth/2
-companyLogo2.y = display.contentHeight/2
-companyLogo2:scale(2.5, 2.5)
+local companyLogo2
 
 -- set the scroll speed
-local scrollSpeed = 3
+local scrollSpeed = 9
 
 -- create local for rotation
 local rotate = 0
 
+local visible = 0
+
+local scale = 1
 --------------------------------------------------------------------
---                           FUNCTIONS
+--                           OBJECT CREATION
+----------------------------------------------------------------------
+companyLogo = display.newImageRect("Images/CompanyLogoLiamC.@2x-Recovered.png", 100, 100)
+companyLogo.x = 0
+companyLogo.y = display.contentHeight/2
+
+companyLogo2 = display.newImageRect("Images/CompanyLogoLiamC.@2x-Recovered.png", 100, 100)
+companyLogo2.isVisible = false
+companyLogo2.x = display.contentWidth/2
+companyLogo2.y = display.contentHeight/2
+companyLogo2:scale(3.5, 3.5)
+--------------------------------------------------------------------
+--                           LOCAL FUNCTIONS
 ----------------------------------------------------------------------
 
 local function AnimateCompanyLogo(event)
@@ -39,17 +48,25 @@ local function AnimateCompanyLogo(event)
 
 	rotate = rotate + scrollSpeed
 
+	companyLogo.alpha = visible + .5
+
+	companyLogo:scale( scale, scale )
+
+	scale = scale + .00009
+
+	visible = visible + .005
 	companyLogo.rotation = rotate
 end
 
 local function PopUpLogo()
 	companyLogo2.isVisible = true
+	companyLogo.isVisible = false
 end
 --------------------------------------------------------------------------------
 --							Timers
 ----------------------------------------------------------------------------------------------------------------------
 
-timer.performWithDelay(6000, PopUpLogo)
+timer.performWithDelay(2500, PopUpLogo)
 
 -----------------------------------------------------------------------
 --                         Event Listeners
