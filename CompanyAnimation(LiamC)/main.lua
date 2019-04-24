@@ -13,11 +13,11 @@ display.setDefault("background", 0, 1, 1)
 --                              Variables + Objectsd
 -------------------------------------------------------------------
 -- create company logo
-local companyLogo = display.newImageRect("Images/CompanyLogoLiamC.@2x-Recovered.png", 100, 100)
+local companyLogo = display.newImageRect("Images/CompanyLogoNathanC@2x.png", 100, 100)
 companyLogo.x = 0
 companyLogo.y = display.contentHeight/2
 
-local companyLogo2 = display.newImageRect("Images/CompanyLogoLiamC.@2x-Recovered.png", 100, 100)
+local companyLogo2 = display.newImageRect("Images/CompanyLogoNathanC@2x.png", 100, 100)
 companyLogo2.isVisible = false
 companyLogo2.x = display.contentWidth/2
 companyLogo2.y = display.contentHeight/2
